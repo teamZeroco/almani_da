@@ -1,233 +1,111 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>알마니 수익성 분석</title>
-    <style>
-        :root {
-            --primary-color: #2C3E50;
-            --secondary-color: #3498DB;
-            --accent-color: #E74C3C;
-            --background-color: #ECF0F1;
-            --border-radius: 8px;
-        }
+{% extends "layout.html" %}
 
-        body {
-            font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: var(--background-color);
-            color: var(--primary-color);
-        }
+{% block title %}기본 분석{% endblock %}
 
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-        }
+{% block content %}
+<h1>알마니 수익성 분석</h1>
 
-        .form-container {
-            background: white;
-            padding: 30px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .form-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: var(--border-radius);
-        }
-
-        .form-section h2 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 1.2em;
-            color: var(--secondary-color);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--primary-color);
-        }
-
-        input {
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 4px;
-            width: 150px;
-            transition: border-color 0.3s;
-        }
-
-        input:focus {
-            border-color: var(--secondary-color);
-            outline: none;
-        }
-
-        .input-suffix {
-            color: #666;
-            min-width: 40px;
-        }
-
-        button {
-            background: var(--secondary-color);
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1em;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background: #2980b9;
-        }
-
-        .graph-container {
-            margin-top: 30px;
-            background: white;
-            padding: 20px;
-            border-radius: var(--border-radius);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-        }
-
-        .error {
-            color: var(--accent-color);
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>알마니 수익성 분석 도구</h1>
-    
-    <div class="form-container">
-        <form method="POST" id="analysisForm">
-            <div class="form-section">
-                <h2>기본 비용 설정</h2>
-                <div class="input-group">
-                    <div class="form-group">
-                        <label>원가</label>
-                        <input type="number" step="0.1" name="base_cost" value="{{ params.base_cost if params else 8.5 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
-                    <div class="form-group">
-                        <label>매출단가</label>
-                        <input type="number" step="0.1" name="revenue_rate" value="{{ params.revenue_rate if params else 12.0 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
+<div class="form-container">
+    <form method="POST">
+        <div class="form-section">
+            <h2>기본 비용 설정</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label>원가</label>
+                    <input type="number" step="0.1" name="base_cost" value="{{ params.base_cost if params else 8.5 }}" required>
+                    <span class="input-suffix">원</span>
+                </div>
+                <div class="form-group">
+                    <label>매출단가</label>
+                    <input type="number" step="0.1" name="revenue_rate" value="{{ params.revenue_rate if params else 12.0 }}" required>
+                    <span class="input-suffix">원</span>
                 </div>
             </div>
+        </div>
 
-            <div class="form-section">
-                <h2>발송량 설정</h2>
-                <div class="input-group">
-                    <div class="form-group">
-                        <label>시나리오 1</label>
-                        <input type="number" name="volume_1" value="{{ params.volume_1 if params else 100000 }}" required>
-                        <span class="input-suffix">건</span>
-                    </div>
-                    <div class="form-group">
-                        <label>시나리오 2</label>
-                        <input type="number" name="volume_2" value="{{ params.volume_2 if params else 500000 }}" required>
-                        <span class="input-suffix">건</span>
-                    </div>
-                    <div class="form-group">
-                        <label>시나리오 3</label>
-                        <input type="number" name="volume_3" value="{{ params.volume_3 if params else 1000000 }}" required>
-                        <span class="input-suffix">건</span>
-                    </div>
+        <div class="form-section">
+            <h2>발송량 설정</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label>시나리오 1</label>
+                    <input type="number" name="volume_1" value="{{ params.volume_1 if params else 100000 }}" required>
+                    <span class="input-suffix">건</span>
+                </div>
+                <div class="form-group">
+                    <label>시나리오 2</label>
+                    <input type="number" name="volume_2" value="{{ params.volume_2 if params else 500000 }}" required>
+                    <span class="input-suffix">건</span>
+                </div>
+                <div class="form-group">
+                    <label>시나리오 3</label>
+                    <input type="number" name="volume_3" value="{{ params.volume_3 if params else 1000000 }}" required>
+                    <span class="input-suffix">건</span>
                 </div>
             </div>
+        </div>
 
-            <div class="form-section">
-                <h2>부대비용 설정</h2>
-                <div class="input-group">
-                    <div class="form-group">
-                        <label>서버 비용</label>
-                        <input type="number" name="server_cost" value="{{ params.server_cost if params else 1000000 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
-                    <div class="form-group">
-                        <label>기타 부대비용</label>
-                        <input type="number" name="additional_costs" value="{{ params.additional_costs if params else 500000 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
+        <div class="form-section">
+            <h2>부대비용 설정</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label>서버 비용</label>
+                    <input type="number" name="server_cost" value="{{ params.server_cost if params else 1000000 }}" required>
+                    <span class="input-suffix">원</span>
+                </div>
+                <div class="form-group">
+                    <label>기타 부대비용</label>
+                    <input type="number" name="additional_costs" value="{{ params.additional_costs if params else 500000 }}" required>
+                    <span class="input-suffix">원</span>
                 </div>
             </div>
+        </div>
 
-            <div class="form-section">
-                <h2>요금제 설정</h2>
-                <div class="input-group">
-                    <div class="form-group">
-                        <label>Basic 요금</label>
-                        <input type="number" name="basic_fee" value="{{ params.basic_fee if params else 4900 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Standard 요금</label>
-                        <input type="number" name="standard_fee" value="{{ params.standard_fee if params else 19000 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Premium 요금</label>
-                        <input type="number" name="premium_fee" value="{{ params.premium_fee if params else 49000 }}" required>
-                        <span class="input-suffix">원</span>
-                    </div>
+        <div class="form-section">
+            <h2>요금제 설정</h2>
+            <div class="input-group">
+                <div class="form-group">
+                    <label>Basic 요금</label>
+                    <input type="number" name="basic_fee" value="{{ params.basic_fee if params else 4900 }}" required>
+                    <span class="input-suffix">원</span>
                 </div>
-                
-                <div class="input-group">
-                    <div class="form-group">
-                        <label>Basic 사용자 수</label>
-                        <input type="number" name="basic_users" value="{{ params.basic_users if params else 10 }}" required>
-                        <span class="input-suffix">명</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Standard 사용자 수</label>
-                        <input type="number" name="standard_users" value="{{ params.standard_users if params else 5 }}" required>
-                        <span class="input-suffix">명</span>
-                    </div>
-                    <div class="form-group">
-                        <label>Premium 사용자 수</label>
-                        <input type="number" name="premium_users" value="{{ params.premium_users if params else 2 }}" required>
-                        <span class="input-suffix">명</span>
-                    </div>
+                <div class="form-group">
+                    <label>Standard 요금</label>
+                    <input type="number" name="standard_fee" value="{{ params.standard_fee if params else 19000 }}" required>
+                    <span class="input-suffix">원</span>
+                </div>
+                <div class="form-group">
+                    <label>Premium 요금</label>
+                    <input type="number" name="premium_fee" value="{{ params.premium_fee if params else 49000 }}" required>
+                    <span class="input-suffix">원</span>
                 </div>
             </div>
+            
+            <div class="input-group">
+                <div class="form-group">
+                    <label>Basic 사용자 수</label>
+                    <input type="number" name="basic_users" value="{{ params.basic_users if params else 10 }}" required>
+                    <span class="input-suffix">명</span>
+                </div>
+                <div class="form-group">
+                    <label>Standard 사용자 수</label>
+                    <input type="number" name="standard_users" value="{{ params.standard_users if params else 5 }}" required>
+                    <span class="input-suffix">명</span>
+                </div>
+                <div class="form-group">
+                    <label>Premium 사용자 수</label>
+                    <input type="number" name="premium_users" value="{{ params.premium_users if params else 2 }}" required>
+                    <span class="input-suffix">명</span>
+                </div>
+            </div>
+        </div>
 
-            <button type="submit">분석 그래프 생성</button>
-        </form>
-    </div>
+        <button type="submit">분석 그래프 생성</button>
+    </form>
+</div>
 
-    {% if graph_image %}
-    <div class="graph-container">
-        <img src="data:image/png;base64,{{ graph_image }}" alt="수익성 분석 그래프">
-    </div>
-    {% endif %}
-</body>
-</html> 
+{% if graph_image %}
+<div class="graph-container">
+    <img src="data:image/png;base64,{{ graph_image }}" alt="수익성 분석 그래프">
+</div>
+{% endif %}
+{% endblock %} 
